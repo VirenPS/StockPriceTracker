@@ -1,6 +1,7 @@
 # Files
 Excel Data Lookup (News)/
 .gitignore
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
