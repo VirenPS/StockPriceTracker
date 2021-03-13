@@ -1,0 +1,5 @@
+Steps Outline
+
+1) Get Live prices and alert triggers.
+2) Set up automated email alerts.
+3) Forecasting?
