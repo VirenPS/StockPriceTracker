@@ -1,47 +1,36 @@
-# import numpy as np
-# import pandas as pd
-# # Data viz
-# import plotly.graph_objs as go
-
 import pprint
 import smtplib
 import ssl
 
+import numpy as np
+import pandas as pd
 import yfinance as yf
 
 from send_email import Email
 
 
 class Alert:
-    def __init__(self, ticker, alert_price, direction):
+    def __init__(self, ticker, direction, alert_price, send_email='True'):
         self.ticker = ticker
-        self.alert_price = alert_price
         self.direction = direction
-
-# All Data for Ticker - Clean
+        self.alert_price = alert_price
+        self.send_email = send_email
 
 
 def ticker_all_info(ticker):
     pp = pprint.PrettyPrinter(width=41, compact=True)
     return pp.pprint(yf.Ticker(ticker).info)
-# Use: print(ticker_all_info('amzn'))
-
-# Data Source
-
-# TODO: Adj Close may be more useful. Closer to real time, as if published end of min? Also available: Open, Close.
-# print(stock_price_condensed)
 
 
 def alert_price_reached_boolean(ticker, direction, alert_price, stock_price):
 
-    if direction == 'decreased to':
+    if direction == 'decrease to':
         if stock_price <= alert_price:
             return True
-
         else:
             return False
 
-    if direction == 'increased to':
+    if direction == 'increase to':
         if stock_price >= alert_price:
             return True
         else:
@@ -49,34 +38,47 @@ def alert_price_reached_boolean(ticker, direction, alert_price, stock_price):
 
 
 def run_alerts(alerts_list):
-    tickers_string = ''
+    float_formatter = "{:.2f}".format
+
+    # List of tickers, then converted into string format required for yf data download.
+    tickers_list = []
     for alert_ticker in alerts_list:
-        tickers_string += alert_ticker.ticker + ' '
+        tickers_list.append(alert_ticker.ticker)
+    tickers_string = ' '.join(tickers_list)
 
     stock_price = yf.download(
         tickers=tickers_string, period='1d', interval='1m')['Adj Close']
 
     most_recent = stock_price.tail(1)
+    # print(most_recent)
 
     for alert in alerts_list:
-        alert_price_reached_boolean(
-            alert.ticker, alert.direction, alert.alert_price, most_recent['{alert.ticker'])
+        if most_recent.size == 1:
+            stock_price = most_recent[0]
+        else:
+            stock_price = most_recent[alert.ticker][0]
+
+        if alert_price_reached_boolean(alert.ticker, alert.direction, alert.alert_price, stock_price):
+            if alert.send_email:
+                stock_alert_email = Email(subject=f'{alert.ticker} price alert triggered - Price {alert.direction} {float_formatter(stock_price)} < {alert.alert_price}',
+                                          receiver_email='viren.samani@hotmail.co.uk', body='test', sender_email='pythontestvs@gmail.com')
+                stock_alert_email.send_email()
+                print('Email sent: ' + alert.ticker +
+                      f' price alert triggered - Price {alert.direction}: ' + float_formatter(stock_price) + f' (PA: {alert.alert_price})')
+            else:
+                print(alert.ticker +
+                      f' price alert triggered - Price {alert.direction}: ' + float_formatter(stock_price) + f' (PA: {alert.alert_price})')
+        else:
+            pass
 
 
 if __name__ == '__main__':
-    #
-
-    # print(alert_price_reached_boolean(ticker='AMZN', direction='decreased to',
-    #                                   stock_price=stock_price, alert_price=3000))
-    # stock_alert_email = Email(subject=r'New_TEST', receiver_email='viren.samani@hotmail.co.uk',
-    #   body = 'BLANK', sender_email = "pythontestvs@gmail.com")
-
-    # print(stock_alert_email.sender_email)
-    # stock_alert_email.send_email()
-    # stock_alert_email.send_email()
-
-    alerts_list = [Alert(ticker='AMZN', alert_price=3000,
-                         direction='decreased to'), Alert(ticker='AAPL', alert_price=150,
-                                                          direction='decreased to')]
+    alerts_list = [
+        Alert('AMZN', 'decrease to', 3000),
+        Alert('AAPL', 'decrease to', 115),
+        Alert('MSFT', 'decrease to', 230),
+        Alert('TSLA', 'decrease to', 650)
+    ]
 
     run_alerts(alerts_list)
+    print('Completed Run.')
