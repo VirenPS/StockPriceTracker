@@ -53,6 +53,7 @@ def run_alerts(alerts_list):
     # print(most_recent)
 
     for alert in alerts_list:
+
         if most_recent.size == 1:
             stock_price = most_recent[0]
         else:
@@ -63,13 +64,13 @@ def run_alerts(alerts_list):
                 stock_alert_email = Email(subject=f'{alert.ticker} price alert triggered - Price {alert.direction} {float_formatter(stock_price)} < {alert.alert_price}',
                                           receiver_email='viren.samani@hotmail.co.uk', body=f'https://uk.finance.yahoo.com/quote/{alert.ticker}', sender_email='pythontestvs@gmail.com')
                 stock_alert_email.send_email()
-                print('Email sent: ' + alert.ticker +
-                      f' price alert triggered - Price {alert.direction}: ' + float_formatter(stock_price) + f' (PA: {alert.alert_price})')
+                print(alert.ticker + ' - Email sent - ' +
+                      f'Price alert triggered - Price {alert.direction}: ' + float_formatter(stock_price) + f' (PA: {alert.alert_price})')
             else:
                 print(alert.ticker +
-                      f' price alert triggered - Price {alert.direction}: ' + float_formatter(stock_price) + f' (PA: {alert.alert_price})')
+                      f' Price alert triggered - Price {alert.direction}: ' + float_formatter(stock_price) + f' (PA: {alert.alert_price})')
         else:
-            pass
+            print(alert.ticker + ' - No alert required')
 
 
 if __name__ == '__main__':
