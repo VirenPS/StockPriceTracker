@@ -61,7 +61,7 @@ def run_alerts(alerts_list):
         if alert_price_reached_boolean(alert.ticker, alert.direction, alert.alert_price, stock_price):
             if alert.send_email:
                 stock_alert_email = Email(subject=f'{alert.ticker} price alert triggered - Price {alert.direction} {float_formatter(stock_price)} < {alert.alert_price}',
-                                          receiver_email='viren.samani@hotmail.co.uk', body='test', sender_email='pythontestvs@gmail.com')
+                                          receiver_email='viren.samani@hotmail.co.uk', body=f'https://uk.finance.yahoo.com/quote/{alert.ticker}', sender_email='pythontestvs@gmail.com')
                 stock_alert_email.send_email()
                 print('Email sent: ' + alert.ticker +
                       f' price alert triggered - Price {alert.direction}: ' + float_formatter(stock_price) + f' (PA: {alert.alert_price})')
@@ -74,7 +74,7 @@ def run_alerts(alerts_list):
 
 if __name__ == '__main__':
     alerts_list = [
-        Alert('AMZN', 'decrease to', 3000),
+        Alert('AMZN', 'decrease to', 3200),
         Alert('AAPL', 'decrease to', 115),
         Alert('MSFT', 'decrease to', 230),
         Alert('TSLA', 'decrease to', 650)
