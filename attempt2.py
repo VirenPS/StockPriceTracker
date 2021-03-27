@@ -75,11 +75,14 @@ def run_alerts(alerts_list):
 
 if __name__ == '__main__':
     alerts_list = [
-        Alert('AMZN', 'decrease to', 3200),
+        Alert('AMZN', 'decrease to', 3100),
         Alert('AAPL', 'decrease to', 115),
         Alert('MSFT', 'decrease to', 230),
         Alert('TSLA', 'decrease to', 650)
     ]
 
-    run_alerts(alerts_list)
-    print('Completed Run.')
+    while alerts_list[].send_email == True in alerts_list:
+        print('Hi')
+        # run_alerts(alerts_list)
+        time.sleep(10)
+        print('Completed Run.')
