@@ -6,7 +6,8 @@ class Email:
     def __init__(self, subject, receiver_email, body, sender_email):
         self.subject = subject
         self.receiver_email = receiver_email
-        self.password = 'Testing123!'
+        # self.password = 'PASSWORD' 
+        # Enter password here.
         self.body = body
         self.sender_email = sender_email
 
