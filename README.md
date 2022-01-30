@@ -1,4 +1,4 @@
-# Stock Price Alert
+# Stock Price Change Alerts
 
 ## Local cron job extracting prices from yahoo finance and sending emails when listed price targerts are met.
 
